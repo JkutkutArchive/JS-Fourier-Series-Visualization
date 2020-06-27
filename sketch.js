@@ -6,9 +6,9 @@
 let time = 0;
 let wave = []; // the actual respresentation. Only the y values (f(x)) are stored
 
-let nSlider, eSlider, a0Input, anInput, updateBtn;
-let a0, an, bn, dN;
-let period = 2 * Math.PI
+let nSlider, eSlider, a0Input, anInput, updateBtn; // UI
+let a0, an, bn, dN; // parameters to generate the series 
+let initialX; period = 2 * Math.PI; // Period of the function
 
 let xCoord = function(ele){
     return ele.x + ele.width;
@@ -79,11 +79,30 @@ function updateF(){ //Change the fourier series based on an, bn and a0
     }
 
     wave = [];
+    initialX = 0;
     
+}
+function linedash(x1, y1, x2, y2, delta, style = '-') {
+    // delta is both the length of a dash, the distance between 2 dots/dashes, and the diameter of a round
+    let distance = dist(x1,y1,x2,y2);
+    let dashNumber = distance/delta;
+    let xDelta = (x2-x1)/dashNumber;
+    let yDelta = (y2-y1)/dashNumber;
+
+    for (let i = 0; i < dashNumber; i+= 2) {
+        let xi1 = i*xDelta + x1;
+        let yi1 = i*yDelta + y1;
+        let xi2 = (i+1)*xDelta + x1;
+        let yi2 = (i+1)*yDelta + y1;
+
+        if (style == '-') { line(xi1, yi1, xi2, yi2); }
+        else if (style == '.') { point(xi1, yi1); }
+        else if (style == 'o') { ellipse(xi1, yi1, delta/2); }
+    }
 }
 
 function setup() {
-  createCanvas(650, 500);
+  createCanvas(700, 500);
   // Sliders
   nSlider = createSlider(1, 50, 10);
   nSlider.position(10, height - 50);
@@ -127,10 +146,31 @@ function draw() {
   text('Δn', xCoord(updateBtn) + 8, updateBtn.y);
 
 
-  translate(eSlider.value(), height / 2);
+  
 
-  let x = y = a0 * eSlider.value(); // coordinates of the center of the actual circle
+  translate(100, height / 2);
+  
+  stroke(255); // make the axis white
+  linedash(-100, 0, width, 0, 3)
+  linedash(-80, -height / 2, -80, height / 2, 3)
 
+  for(let i = 0; i < height / 2; i = i + eSlider.value() / 2){
+    line(-75, i, -85, i);
+    line(-75, -i, -85, -i);
+    let m = i / eSlider.value()
+    print(m)
+    if (m % 1 == 0){
+        textAlign(RIGHT)
+        text((-m).toString(), -85, i)
+        text((m).toString(), -85, -i)
+        textAlign(LEFT, CENTER)
+    }
+  }
+  
+  
+  let x = 0
+  let y = a0 * eSlider.value(); // coordinates of the center of the actual circle
+  
   let useAn = an.toString() != "function(n){return 0}"; // CAN BE ON UPDATE
   let useBn = bn.toString() != "function(n){return 0}";
 
@@ -190,7 +230,7 @@ function draw() {
   time += 0.05;
 
 
-  if (wave.length > width / 2) { // No need to store all the wave, remove the end when it gets out of the window
+  if (wave.length > width - 300) { // No need to store all the wave, remove the end when it gets out of the window
     wave.pop();
   }
 }
