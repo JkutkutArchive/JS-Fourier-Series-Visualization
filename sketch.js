@@ -79,7 +79,10 @@ function updateF(){ //Change the fourier series based on an, bn and a0
     }
 
     wave = [];
-    initialX = 0;
+    initialX = a0;
+    for(let i = 0; i < nSlider.value(); i++){
+        initialX += an(i) + bn(i);
+    }
     
 }
 function linedash(x1, y1, x2, y2, delta, style = '-') {
@@ -152,21 +155,30 @@ function draw() {
   
   stroke(255); // make the axis white
   linedash(-100, 0, width, 0, 3)
-  linedash(-80, -height / 2, -80, height / 2, 3)
+  linedash(-70, -height / 2, -70, height / 2, 3)
 
-  for(let i = 0; i < height / 2; i = i + eSlider.value() / 2){
-    line(-75, i, -85, i);
-    line(-75, -i, -85, -i);
-    let m = i / eSlider.value()
+
+  let number = (height / 2) / eSlider.value(); //number of possible - that fit on the 1:1 scale on each side
+  let ePerDash = 1;
+  while (number > 10){
+    number = number / 2;
+    ePerDash *= 2;
+  }
+
+  let dY = ePerDash * eSlider.value();
+  for(let i = 0; i < number; i++){
+    let y = i * dY;
+    line(-65, y, -75, y);
+    line(-65, -y, -75, -y);
+    let m = i * ePerDash;
     print(m)
     if (m % 1 == 0){
         textAlign(RIGHT)
-        text((-m).toString(), -85, i)
-        text((m).toString(), -85, -i)
+        text((-m).toString(), -75, y)
+        text((m).toString(), -75, -y)
         textAlign(LEFT, CENTER)
     }
   }
-  
   
   let x = 0
   let y = a0 * eSlider.value(); // coordinates of the center of the actual circle
