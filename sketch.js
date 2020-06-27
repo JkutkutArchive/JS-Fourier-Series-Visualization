@@ -66,7 +66,7 @@ function updateF(){ //Change the fourier series based on an, bn and a0
 
     preBn = bn;
     try{
-        if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIE]+$").test(bnInput.value())){
+        if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(bnInput.value())){
             throw "The syntax is not correct.";
         }
         eval("bn = function(n){return " + bnInput.value() + "}");
@@ -87,7 +87,7 @@ function setup() {
   // Sliders
   nSlider = createSlider(1, 50, 10);
   nSlider.position(10, height - 50);
-  eSlider = createSlider(20, 250, 100);
+  eSlider = createSlider(1, 250, 100);
   eSlider.position(10, height - 20);
   
   // Inputs
@@ -127,27 +127,51 @@ function draw() {
   text('Δn', xCoord(updateBtn) + 8, updateBtn.y);
 
 
-  translate(eSlider.value() + 100, height / 2);
+  translate(eSlider.value(), height / 2);
 
-  let x = 0, y = 0; // coordinates of the center of the actual circle
+  let x = y = a0 * eSlider.value(); // coordinates of the center of the actual circle
+
+  let useAn = an.toString() != "function(n){return 0}";
+  let useBn = bn.toString() != "function(n){return 0}";
 
   for (let i = 0; i < nSlider.value(); i++) {
     let n = dN(i);
-    let prevx = x, prevy = y; // Coordinates of the previous circle's center
+    let angle = (2 * Math.PI * n * time) / (period);
+    let prevx, prevy; // Coordinates of the previous circle's center
+    let radius;
+    // an:
+    if (useAn){
+        prevx = x, prevy = y; // Coordinates of the previous circle's center
+        
+        y += (an(n) * sin(angle)) * eSlider.value();
+        // y += (a0 + an(n) * sin(angle)) * eSlider.value();
+        x += (an(n) * cos(angle)) * eSlider.value();
+        // x += (a0 + an(n) * cos(angle)) * eSlider.value();
+        radius = an(n) * eSlider.value()
+        
+        stroke(255, 100); // make the line white with some alpha
+        noFill(); // empty circle
+        ellipse(prevx, prevy, radius * 2); // Draw circle
+        
+        stroke(255); // make the line pure white
+        line(prevx, prevy, x, y); // Draw the radius of the circle
+    }
 
-    let angle = (2 * Math.PI * n * time) / (period)
-    y += (a0 + (an(n) * sin(angle) + bn(n) * cos(angle))) * eSlider.value()
-    x += (a0 + (an(n) * cos(angle) + bn(n) * sin(angle))) * eSlider.value()
+    // bn:
+    if (useBn){
+        prevx = x, prevy = y; // Coordinates of the previous circle's center
 
-    let radius = an(n) * eSlider.value()
-
-    stroke(255, 100); // make the line white with some alpha
-    noFill(); // empty circle
-
-    ellipse(prevx, prevy, radius * 2);
-
-    stroke(255); // make the line pure white
-    line(prevx, prevy, x, y); // Draw the radius of the circle
+        y += (bn(n) * cos(angle)) * eSlider.value()
+        x += (bn(n) * sin(angle)) * eSlider.value()
+        radius = bn(n) * eSlider.value()
+        
+        stroke(255, 100); // make the line white with some alpha
+        noFill(); // empty circle
+        ellipse(prevx, prevy, radius * 2); // Draw circle
+        
+        stroke(255); // make the line pure white
+        line(prevx, prevy, x, y); // Draw the radius of the circle
+    }
   }
   
   wave.unshift(y);
@@ -162,11 +186,11 @@ function draw() {
   }
   endShape();
 
-//   time += 0.01;
-  time += 0.05;
+  time += 0.01;
+//   time += 0.05;
 
 
-  if (wave.length > 250) { // No need to store all the wave, remove the end when it gets big
+  if (wave.length > width / 2) { // No need to store all the wave, remove the end when it gets out of the window
     wave.pop();
   }
 }
