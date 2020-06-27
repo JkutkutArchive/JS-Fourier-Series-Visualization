@@ -6,15 +6,19 @@
 let time = 0;
 let wave = []; // the actual respresentation. Only the y values (f(x)) are stored
 
-let nSlider;
+let nSlider, eSlider, a0Input, anInput, updateBtn;
+let a0 = 4 / Math.PI;
+let an = function(n){return 1/n};
+let bn = function(n){return 0};
+let dN = function(n){return 2 * n + 1};
 
 let xCoord = function(ele){
     return ele.x + ele.width;
-    // return - width / 2 + slider.x * 2 + slider.width - 30;
 }
-let yCoord = function(slider){
-    return slider.y
-    // return - height / 2 + slider.y
+
+
+function updateF(){ //Change the fourier series based on an, bn and a0
+
 }
 
 function setup() {
@@ -35,10 +39,15 @@ function setup() {
   bnInput = createInput()
   bnInput.position(a0Input.x + 230, nSlider.y)
 
+  dNInput = createInput()
+  dNInput.position(bnInput.x + 123, eSlider.y)
+  dNInput.size(bnInput.width / 4, bn.height)
+
   //Button:
   updateBtn = createButton("Update")
   updateBtn.position(anInput.x + 230, eSlider.y)
-  updateBtn.size(bnInput.width, bnInput.height)
+  updateBtn.size(bnInput.width / 2, bnInput.height)
+  updateBtn.mousePressed(updateF)
 
   textSize(15);
   textAlign(LEFT, CENTER);
@@ -49,9 +58,10 @@ function draw() {
   fill(255)
   text('n', xCoord(nSlider), nSlider.y);
   text('Scale', xCoord(eSlider), eSlider.y);
-  text('a0', xCoord(nSlider) + 60, nSlider.y);
+  text('a0 / 2', xCoord(nSlider) + 45, nSlider.y);
   text('an', xCoord(eSlider) + 60, eSlider.y);
   text('bn', xCoord(a0Input) + 10, nSlider.y);
+  text('Δn', xCoord(updateBtn) + 2, updateBtn.y);
 
 
   translate(eSlider.value() + 100, height / 2);
@@ -59,15 +69,18 @@ function draw() {
   let x = 0, y = 0; // coordinates of the center of the actual circle
 
   for (let i = 0; i < nSlider.value(); i++) {
+    let n = dN(i);
     let prevx = x, prevy = y; // Coordinates of the previous circle's center
 
-    let n = i * 2 + 1;
-    let radius = eSlider.value() * (4 / (n * PI));
-    x += radius * cos(n * time);
-    y += radius * sin(n * time);
+    // y += (a0 * (an(n) * sin((2 * n + 1) * time))) * eSlider.value()
+    y += (a0 * (an(n) * sin(n * time) + bn(n) * cos(n * time))) * eSlider.value()
+    x += (a0 * an(n) * cos(n * time)) * eSlider.value()
+
+    let radius = a0 * an(n) * eSlider.value()
 
     stroke(255, 100); // make the line white with some alpha
     noFill(); // empty circle
+
     ellipse(prevx, prevy, radius * 2);
 
     stroke(255); // make the line pure white
