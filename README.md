@@ -24,6 +24,22 @@ This simple visualization enables to see Fourier Series with a 2π period.
 - **bn:** 0
 - **Δn:** 2 * n + 1
 
+
+### x²:
+- **a0:** (Math.pow(Math.PI, 2) / 3)
+- **an:** 0
+- **bn:** 4 * Math.pow(-1, n) / (n * n)
+- **Δn:** n + 1
+
+### 1 - x²:
+- **a0:** (-Math.pow(Math.PI, 2)) / (3)
+- **an:** 0
+- **bn:** (-4 * Math.pow(-1, n)) / (Math.pow(n, 2))
+- **Δn:** n + 1
+
+
+
+
 ### :
 - **a0:** 
 - **an:** 
