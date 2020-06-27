@@ -143,7 +143,7 @@ function draw() {
   background(0);
   fill(255)
   text('n', xCoord(nSlider), nSlider.y);
-  text('Scale', xCoord(eSlider), eSlider.y);
+  text('Zoom', xCoord(eSlider), eSlider.y);
   text('a0 / 2', xCoord(nSlider) + 45, nSlider.y);
   text('an', xCoord(eSlider) + 60, eSlider.y);
   text('bn', xCoord(a0Input) + 10, nSlider.y);
@@ -161,6 +161,10 @@ function draw() {
 
   let number = (height / 2) / eSlider.value(); //number of possible - that fit on the 1:1 scale on each side
   let ePerDash = 1;
+  while (number < 4){
+      number *= 2;
+      ePerDash /= 2;
+  }
   while (number > 10){
     number = number / 2;
     ePerDash *= 2;
@@ -169,14 +173,13 @@ function draw() {
   let dY = ePerDash * eSlider.value();
   for(let i = 0; i < number; i++){
     let y = i * dY;
-    line(-65, y, -75, y);
-    line(-65, -y, -75, -y);
+    line(35, y, 25, y);
+    line(35, -y, 25, -y);
     let m = i * ePerDash;
-    print(m)
-    if (m % 1 == 0){
+    if (ePerDash >= 1 || (ePerDash < 1 && i % 2 == 0)){
         textAlign(RIGHT)
-        text((-m).toString(), -75, y)
-        text((m).toString(), -75, -y)
+        text((-m).toString(), 25, y)
+        text((m).toString(), 25, -y)
         textAlign(LEFT, CENTER)
     }
   }
