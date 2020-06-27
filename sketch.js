@@ -94,10 +94,10 @@ function setup() {
   a0Input = createInput("0")
   a0Input.position(nSlider.x + 230, nSlider.y)
 
-  anInput = createInput("4 / (n * Math.PI)")
+  anInput = createInput("0")
   anInput.position(eSlider.x + 230, eSlider.y)
 
-  bnInput = createInput("0")
+  bnInput = createInput("4 / (n * Math.PI)")
   bnInput.position(a0Input.x + 230, nSlider.y)
 
   dNInput = createInput("2 * n + 1")
