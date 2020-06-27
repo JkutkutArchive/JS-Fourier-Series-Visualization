@@ -131,7 +131,7 @@ function draw() {
 
   let x = y = a0 * eSlider.value(); // coordinates of the center of the actual circle
 
-  let useAn = an.toString() != "function(n){return 0}";
+  let useAn = an.toString() != "function(n){return 0}"; // CAN BE ON UPDATE
   let useBn = bn.toString() != "function(n){return 0}";
 
   for (let i = 0; i < nSlider.value(); i++) {
@@ -143,9 +143,9 @@ function draw() {
     if (useAn){
         prevx = x, prevy = y; // Coordinates of the previous circle's center
         
-        y += (an(n) * sin(angle)) * eSlider.value();
+        y += (an(n) * cos(angle)) * eSlider.value();
         // y += (a0 + an(n) * sin(angle)) * eSlider.value();
-        x += (an(n) * cos(angle)) * eSlider.value();
+        x += (an(n) * sin(angle)) * eSlider.value();
         // x += (a0 + an(n) * cos(angle)) * eSlider.value();
         radius = an(n) * eSlider.value()
         
@@ -161,8 +161,8 @@ function draw() {
     if (useBn){
         prevx = x, prevy = y; // Coordinates of the previous circle's center
 
-        y += (bn(n) * cos(angle)) * eSlider.value()
-        x += (bn(n) * sin(angle)) * eSlider.value()
+        y += (bn(n) * sin(angle)) * eSlider.value()
+        x += (bn(n) * cos(angle)) * eSlider.value()
         radius = bn(n) * eSlider.value()
         
         stroke(255, 100); // make the line white with some alpha
@@ -186,8 +186,8 @@ function draw() {
   }
   endShape();
 
-  time += 0.01;
-//   time += 0.05;
+//   time += 0.01;
+  time += 0.05;
 
 
   if (wave.length > width / 2) { // No need to store all the wave, remove the end when it gets out of the window
