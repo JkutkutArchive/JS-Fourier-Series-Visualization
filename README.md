@@ -5,7 +5,7 @@ This simple visualization enables to see Fourier Series with a 2π period.
 
 ## Fourier Series examples:
 
-![fourier](github.com/jkutkut/JS-Fourier-Series-Visualization/resources/fourierSeries.svg)
+![fourier](https://cdn.jsdelivr.net/gh/Jkutkut/JS-Fourier-Series-Visualization@master/resources/fourierSeries.svg)
 
 ### Square wave:
 - **a0 / 2:** 4 / Math.PI
@@ -31,11 +31,3 @@ This simple visualization enables to see Fourier Series with a 2π period.
 - **an:** 0
 - **bn:** (6 * Math.pow(-1, n) * (- Math.pow(Math.PI * n, 2) + 6)) / (Math.pow(n, 3))
 - **Δn:** n + 1
-
-
-
-### :
-- **a0 / 2:** 
-- **an:** 
-- **bn:** 
-- **Δn:** 
