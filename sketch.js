@@ -7,10 +7,8 @@ let time = 0;
 let wave = []; // the actual respresentation. Only the y values (f(x)) are stored
 
 let nSlider, eSlider, a0Input, anInput, updateBtn;
-let a0 = 4 / Math.PI;
-let an = function(n){return 1/n};
-let bn = function(n){return 0};
-let dN = function(n){return 2 * n + 1};
+let a0, an, bn, dN;
+let period = 2 * Math.PI
 
 let xCoord = function(ele){
     return ele.x + ele.width;
@@ -23,7 +21,7 @@ function updateF(){ //Change the fourier series based on an, bn and a0
         if(!RegExp("n").test(dNInput.value())){
             throw "No \"n\" found. Make sure to use the minus symbol.";
         }
-        if(!RegExp("^[n0-9+\\-*\\/ ]+$").test(dNInput.value())){
+        if(!RegExp("^[n0-9+\\-*\\/ ()]+$").test(dNInput.value())){
             throw "The syntax is not correct.";
         }
         eval("dN = function(n){return " + dNInput.value() + "}");
@@ -51,6 +49,36 @@ function updateF(){ //Change the fourier series based on an, bn and a0
         alert("Invalid value of a0.\n"+error);
         a0 = preA0;
     }
+
+    preAn = an;
+    try{
+        if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(anInput.value())){
+            throw "The syntax is not correct.";
+        }
+        eval("an = function(n){return " + anInput.value() + "}");
+    }
+    catch(error){
+        console.log("Invalid value of an.");
+        console.log(error);
+        alert("Invalid value of an.\n"+error);
+        an = preAn;
+    }
+
+    preBn = bn;
+    try{
+        if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIE]+$").test(bnInput.value())){
+            throw "The syntax is not correct.";
+        }
+        eval("bn = function(n){return " + bnInput.value() + "}");
+    }
+    catch(error){
+        console.log("Invalid value of bn.");
+        console.log(error);
+        alert("Invalid value of bn.\n"+error);
+        bn = preBn;
+    }
+
+    wave = [];
     
 }
 
@@ -59,14 +87,14 @@ function setup() {
   // Sliders
   nSlider = createSlider(1, 50, 10);
   nSlider.position(10, height - 50);
-  eSlider = createSlider(20, 160, 76);
+  eSlider = createSlider(20, 250, 100);
   eSlider.position(10, height - 20);
   
   // Inputs
-  a0Input = createInput("4 / Math.PI")
+  a0Input = createInput("0")
   a0Input.position(nSlider.x + 230, nSlider.y)
 
-  anInput = createInput("1 / n")
+  anInput = createInput("4 / (n * Math.PI)")
   anInput.position(eSlider.x + 230, eSlider.y)
 
   bnInput = createInput("0")
@@ -74,7 +102,7 @@ function setup() {
 
   dNInput = createInput("2 * n + 1")
   dNInput.position(bnInput.x + 109, eSlider.y)
-  dNInput.size(bnInput.width / 3, bn.height)
+  dNInput.size(bnInput.width / 3, bnInput.height)
 
   //Button:
   updateBtn = createButton("Update")
@@ -84,6 +112,8 @@ function setup() {
 
   textSize(15);
   textAlign(LEFT, CENTER);
+
+  updateF()
 }
 
 function draw() {
@@ -105,11 +135,11 @@ function draw() {
     let n = dN(i);
     let prevx = x, prevy = y; // Coordinates of the previous circle's center
 
-    // y += (a0 * (an(n) * sin((2 * n + 1) * time))) * eSlider.value()
-    y += (a0 * (an(n) * sin(n * time) + bn(n) * cos(n * time))) * eSlider.value()
-    x += (a0 * (an(n) * cos(n * time) + bn(n) * sin(n * time))) * eSlider.value()
+    let angle = (2 * Math.PI * n * time) / (period)
+    y += (a0 + (an(n) * sin(angle) + bn(n) * cos(angle))) * eSlider.value()
+    x += (a0 + (an(n) * cos(angle) + bn(n) * sin(angle))) * eSlider.value()
 
-    let radius = a0 * an(n) * eSlider.value()
+    let radius = an(n) * eSlider.value()
 
     stroke(255, 100); // make the line white with some alpha
     noFill(); // empty circle
