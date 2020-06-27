@@ -18,7 +18,40 @@ let xCoord = function(ele){
 
 
 function updateF(){ //Change the fourier series based on an, bn and a0
+    predN = dN
+    try{
+        if(!RegExp("n").test(dNInput.value())){
+            throw "No \"n\" found. Make sure to use the minus symbol.";
+        }
+        if(!RegExp("^[n0-9+\\-*\\/ ]+$").test(dNInput.value())){
+            throw "The syntax is not correct.";
+        }
+        eval("dN = function(n){return " + dNInput.value() + "}");
+        if (dN(3) == 3){
+            throw "This value can not be the identity \"n\".";
+        }
+    }
+    catch(error){
+        console.log("Invalid value of Δn. It should be like \"n + 1\", \"2 * n + 1\"");
+        console.log(error);
+        alert("Invalid value of Δn. It should be like \"n + 1\", \"2 * n + 1\"\n"+error);
+        dN = predN;
+    }
 
+    preA0 = a0
+    try{
+        if(isNaN(eval(a0Input.value())) || typeof eval(a0Input.value()) != "number"){
+            throw "a0 must be a number!";
+        }
+        a0 = eval(a0Input.value())
+    }
+    catch(error){
+        console.log("Invalid value of a0.");
+        console.log(error);
+        alert("Invalid value of a0.\n"+error);
+        a0 = preA0;
+    }
+    
 }
 
 function setup() {
@@ -26,27 +59,27 @@ function setup() {
   // Sliders
   nSlider = createSlider(1, 50, 10);
   nSlider.position(10, height - 50);
-  eSlider = createSlider(20, 190, 76);
+  eSlider = createSlider(20, 160, 76);
   eSlider.position(10, height - 20);
   
   // Inputs
-  a0Input = createInput()
+  a0Input = createInput("4 / Math.PI")
   a0Input.position(nSlider.x + 230, nSlider.y)
 
-  anInput = createInput()
+  anInput = createInput("1 / n")
   anInput.position(eSlider.x + 230, eSlider.y)
 
-  bnInput = createInput()
+  bnInput = createInput("0")
   bnInput.position(a0Input.x + 230, nSlider.y)
 
-  dNInput = createInput()
-  dNInput.position(bnInput.x + 123, eSlider.y)
-  dNInput.size(bnInput.width / 4, bn.height)
+  dNInput = createInput("2 * n + 1")
+  dNInput.position(bnInput.x + 109, eSlider.y)
+  dNInput.size(bnInput.width / 3, bn.height)
 
   //Button:
   updateBtn = createButton("Update")
   updateBtn.position(anInput.x + 230, eSlider.y)
-  updateBtn.size(bnInput.width / 2, bnInput.height)
+  updateBtn.size(bnInput.width / 3, bnInput.height)
   updateBtn.mousePressed(updateF)
 
   textSize(15);
@@ -61,7 +94,7 @@ function draw() {
   text('a0 / 2', xCoord(nSlider) + 45, nSlider.y);
   text('an', xCoord(eSlider) + 60, eSlider.y);
   text('bn', xCoord(a0Input) + 10, nSlider.y);
-  text('Δn', xCoord(updateBtn) + 2, updateBtn.y);
+  text('Δn', xCoord(updateBtn) + 8, updateBtn.y);
 
 
   translate(eSlider.value() + 100, height / 2);
@@ -74,7 +107,7 @@ function draw() {
 
     // y += (a0 * (an(n) * sin((2 * n + 1) * time))) * eSlider.value()
     y += (a0 * (an(n) * sin(n * time) + bn(n) * cos(n * time))) * eSlider.value()
-    x += (a0 * an(n) * cos(n * time)) * eSlider.value()
+    x += (a0 * (an(n) * cos(n * time) + bn(n) * sin(n * time))) * eSlider.value()
 
     let radius = a0 * an(n) * eSlider.value()
 
