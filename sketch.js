@@ -79,12 +79,13 @@ function updateF(){ //Change the fourier series based on an, bn and a0
     }
 
     wave = [];
-    initialX = a0;
+    initialX = Math.abs(a0) * eSlider.value();
     for(let i = 0; i < nSlider.value(); i++){
-        initialX += an(i) + bn(i);
+        let n = i + dN(i)
+        initialX += (Math.abs(an(n)) + Math.abs(bn(n))) * eSlider.value();
     }
-    
 }
+
 function linedash(x1, y1, x2, y2, delta, style = '-') {
     // delta is both the length of a dash, the distance between 2 dots/dashes, and the diameter of a round
     let distance = dist(x1,y1,x2,y2);
@@ -151,11 +152,11 @@ function draw() {
 
   
 
-  translate(100, height / 2);
+  translate(0, height / 2);
   
   stroke(255); // make the axis white
-  linedash(-100, 0, width, 0, 3)
-  linedash(-70, -height / 2, -70, height / 2, 3)
+  linedash(0, 0, width, 0, 3)
+  linedash(30, -height / 2, 30, height / 2, 3)
 
 
   let number = (height / 2) / eSlider.value(); //number of possible - that fit on the 1:1 scale on each side
@@ -179,6 +180,8 @@ function draw() {
         textAlign(LEFT, CENTER)
     }
   }
+
+  translate(initialX, 0); //Initial position
   
   let x = 0
   let y = a0 * eSlider.value(); // coordinates of the center of the actual circle
