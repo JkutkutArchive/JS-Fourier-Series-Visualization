@@ -165,7 +165,7 @@ function draw() {
       number *= 2;
       ePerDash /= 2;
   }
-  while (number > 10){
+  while (number > 8){
     number = number / 2;
     ePerDash *= 2;
   }
@@ -173,8 +173,14 @@ function draw() {
   let dY = ePerDash * eSlider.value();
   for(let i = 0; i < number; i++){
     let y = i * dY;
+    stroke(255)
     line(35, y, 25, y);
     line(35, -y, 25, -y);
+
+    stroke(255, 100)
+    linedash(35, y, width, y, 3)
+    linedash(35, -y, width, -y, 3)
+
     let m = i * ePerDash;
     if (ePerDash >= 1 || (ePerDash < 1 && i % 2 == 0)){
         textAlign(RIGHT)
