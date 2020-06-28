@@ -21,8 +21,13 @@ let xCoord = function(ele){
 }
 
 function updateF(){ //Change the fourier series based on an, bn and a0
-    predN = dN
+    let predN = dN;
+    let preA0 = a0;
+    let preAn = an;
+    let preBn = bn;
+    let v;
     try{
+        v = "Δn";
         if(!RegExp("n").test(dNInput.value())){
             throw "No \"n\" found. Make sure to use the minus symbol.";
         }
@@ -33,53 +38,34 @@ function updateF(){ //Change the fourier series based on an, bn and a0
         if (dN(3) == 3){
             throw "This value can not be the identity \"n\".";
         }
-    }
-    catch(error){
-        console.log("Invalid value of Δn. It should be like \"n + 1\", \"2 * n + 1\"");
-        console.log(error);
-        alert("Invalid value of Δn. It should be like \"n + 1\", \"2 * n + 1\"\n"+error);
-        dN = predN;
-    }
 
-    preA0 = a0
-    try{
+        v = "a0";
         if(isNaN(eval(a0Input.value())) || typeof eval(a0Input.value()) != "number"){
             throw "a0 must be a number!";
         }
         a0 = eval(a0Input.value())
-    }
-    catch(error){
-        console.log("Invalid value of a0.");
-        console.log(error);
-        alert("Invalid value of a0.\n"+error);
-        a0 = preA0;
-    }
 
-    preAn = an;
-    try{
+        v = "an";
         if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(anInput.value())){
             throw "The syntax is not correct.";
         }
         eval("an = function(n){return " + anInput.value() + "}");
-    }
-    catch(error){
-        console.log("Invalid value of an.");
-        console.log(error);
-        alert("Invalid value of an.\n"+error);
-        an = preAn;
-    }
 
-    preBn = bn;
-    try{
+
+        v = "bn";
         if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(bnInput.value())){
             throw "The syntax is not correct.";
         }
         eval("bn = function(n){return " + bnInput.value() + "}");
+
     }
     catch(error){
-        console.log("Invalid value of bn.");
+        console.log("Invalid value of " + v + ". It should be like \"n + 1\", \"2 * n + 1\"");
         console.log(error);
-        alert("Invalid value of bn.\n"+error);
+        alert("Invalid value of " + v + ". It should be like \"n + 1\", \"2 * n + 1\"\n"+error);
+        dN = predN;
+        a0 = preA0;
+        an = preAn;
         bn = preBn;
     }
 
