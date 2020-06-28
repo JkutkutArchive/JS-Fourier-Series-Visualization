@@ -20,56 +20,64 @@ let xCoord = function(ele){
     return ele.x + ele.width;
 }
 
-function updateF(){ //Change the fourier series based on an, bn and a0
+function updateF(full=true){ //Change the fourier series based on an, bn and a0
     let predN = dN;
     let preA0 = a0;
     let preAn = an;
     let preBn = bn;
     let v;
-    try{
-        v = "Δn";
-        if(!RegExp("n").test(dNInput.value())){
-            throw "No \"n\" found. Make sure to use the minus symbol.";
+    if (full){ // If we want to update all
+        try{
+            v = "Δn";
+            if(!RegExp("n").test(dNInput.value())){
+                throw "No \"n\" found. Make sure to use the minus symbol.";
+            }
+            if(!RegExp("^[n0-9+\\-*\\/ ()]+$").test(dNInput.value())){
+                throw "The syntax is not correct.";
+            }
+            eval("dN = function(n){return " + dNInput.value() + "}");
+            if (dN(3) == 3){
+                throw "This value can not be the identity \"n\".";
+            }
+    
+            v = "a0";
+            if(isNaN(eval(a0Input.value())) || typeof eval(a0Input.value()) != "number"){
+                throw "a0 must be a number!";
+            }
+            a0 = eval(a0Input.value())
+    
+            v = "an";
+            if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(anInput.value())){
+                throw "The syntax is not correct.";
+            }
+            eval("an = function(n){return " + anInput.value() + "}");
+    
+    
+            v = "bn";
+            if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(bnInput.value())){
+                throw "The syntax is not correct.";
+            }
+            eval("bn = function(n){return " + bnInput.value() + "}");
+    
+            //If here, all good:
+            useAn = an.toString() != "function(n){return 0}"; //if an is needed to be used
+            useBn = bn.toString() != "function(n){return 0}"; //if bn is needed to be used
+    
         }
-        if(!RegExp("^[n0-9+\\-*\\/ ()]+$").test(dNInput.value())){
-            throw "The syntax is not correct.";
+        catch(error){
+            console.log("Invalid value of " + v + ".");
+            console.log(error);
+            alert("Invalid value of " + v + ".\n"+error);
+            dN = predN;
+            a0 = preA0;
+            an = preAn;
+            bn = preBn;
         }
-        eval("dN = function(n){return " + dNInput.value() + "}");
-        if (dN(3) == 3){
-            throw "This value can not be the identity \"n\".";
-        }
-
-        v = "a0";
-        if(isNaN(eval(a0Input.value())) || typeof eval(a0Input.value()) != "number"){
-            throw "a0 must be a number!";
-        }
-        a0 = eval(a0Input.value())
-
-        v = "an";
-        if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(anInput.value())){
-            throw "The syntax is not correct.";
-        }
-        eval("an = function(n){return " + anInput.value() + "}");
-
-
-        v = "bn";
-        if(!RegExp("^[n0-9+\\-*\\/ ()Math\\.,PIEpowsqr]+$").test(bnInput.value())){
-            throw "The syntax is not correct.";
-        }
-        eval("bn = function(n){return " + bnInput.value() + "}");
-
     }
-    catch(error){
-        console.log("Invalid value of " + v + ".");
-        console.log(error);
-        alert("Invalid value of " + v + ".\n"+error);
-        dN = predN;
-        a0 = preA0;
-        an = preAn;
-        bn = preBn;
-    }
+    
 
-    wave = []; // Reset wave
+    // wave = []; // Reset wave
+    time = 0; // Set time to 0
 
     initialX = Math.abs(a0) * eSlider.value(); //calculate the initial X
     for(let i = 0; i < nSlider.value(); i++){
@@ -79,8 +87,6 @@ function updateF(){ //Change the fourier series based on an, bn and a0
     if (initialX < 60){
         initialX = 60;
     }
-    useAn = an.toString() != "function(n){return 0}"; // CAN BE ON UPDATE
-    useBn = bn.toString() != "function(n){return 0}";
 }
 
 function linedash(x1, y1, x2, y2, delta, style = '-') {
@@ -100,6 +106,10 @@ function linedash(x1, y1, x2, y2, delta, style = '-') {
         else if (style == '.') { point(xi1, yi1); }
         else if (style == 'o') { ellipse(xi1, yi1, delta/2); }
     }
+}
+
+function mouseReleased() {
+    updateF(false);
 }
 
 function setup() {
@@ -234,7 +244,7 @@ function draw() {
     }
   }
   
-  wave.unshift(y);
+  wave.unshift(y); //add y value to the wave
 
 
   translate(200, 0);
@@ -250,7 +260,7 @@ function draw() {
   time += 0.05;
 
 
-  if (wave.length > width - 300) { // No need to store all the wave, remove the end when it gets out of the window
+  if (wave.length > width - initialX) { // No need to store all the wave, remove the end when it gets out of the window
     wave.pop();
   }
 }
