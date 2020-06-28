@@ -3,17 +3,22 @@
 // Based on the code from the coding train:
 // https://thecodingtrain.com/CodingChallenges/125-fourier-series.html
 
+
+//      VARIABLES
 let time = 0;
 let wave = []; // the actual respresentation. Only the y values (f(x)) are stored
 
 let nSlider, eSlider, a0Input, anInput, updateBtn; // UI
 let a0, an, bn, dN; // parameters to generate the series 
+let useAn, useBn; 
 let initialX; period = 2 * Math.PI; // Period of the function
+
+
+//      FUNCTIONS:
 
 let xCoord = function(ele){
     return ele.x + ele.width;
 }
-
 
 function updateF(){ //Change the fourier series based on an, bn and a0
     predN = dN
@@ -78,12 +83,18 @@ function updateF(){ //Change the fourier series based on an, bn and a0
         bn = preBn;
     }
 
-    wave = [];
-    initialX = Math.abs(a0) * eSlider.value();
+    wave = []; // Reset wave
+
+    initialX = Math.abs(a0) * eSlider.value(); //calculate the initial X
     for(let i = 0; i < nSlider.value(); i++){
         let n = i + dN(i)
         initialX += (Math.abs(an(n)) + Math.abs(bn(n))) * eSlider.value();
     }
+    if (initialX < 60){
+        initialX = 60;
+    }
+    useAn = an.toString() != "function(n){return 0}"; // CAN BE ON UPDATE
+    useBn = bn.toString() != "function(n){return 0}";
 }
 
 function linedash(x1, y1, x2, y2, delta, style = '-') {
@@ -195,8 +206,7 @@ function draw() {
   let x = 0
   let y = a0 * eSlider.value(); // coordinates of the center of the actual circle
   
-  let useAn = an.toString() != "function(n){return 0}"; // CAN BE ON UPDATE
-  let useBn = bn.toString() != "function(n){return 0}";
+  
 
   for (let i = 0; i < nSlider.value(); i++) {
     let n = dN(i);
