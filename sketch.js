@@ -60,9 +60,9 @@ function updateF(){ //Change the fourier series based on an, bn and a0
 
     }
     catch(error){
-        console.log("Invalid value of " + v + ". It should be like \"n + 1\", \"2 * n + 1\"");
+        console.log("Invalid value of " + v + ".");
         console.log(error);
-        alert("Invalid value of " + v + ". It should be like \"n + 1\", \"2 * n + 1\"\n"+error);
+        alert("Invalid value of " + v + ".\n"+error);
         dN = predN;
         a0 = preA0;
         an = preAn;
