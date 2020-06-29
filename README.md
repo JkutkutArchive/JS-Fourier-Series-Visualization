@@ -1,7 +1,18 @@
 # JS-Fourier-Series-Visualization:
 
-This simple visualization enables to see Fourier Series with a 2π period.
+This simple visualization enables to see Fourier Series with an easy setup.
 
+## Tutorial:
+
+### Values to adjust:
+- n: The value of N, the number of iterations of the summation.
+- Zoom: The scale can be changed to fit bigger or smaller series
+- Fourier coefficients: They follow the same notation as the image on the examples.
+    - Note 1: The expresion should be written on JavaScript syntax. This means the use of _Math_ functions can be added to all the textboxes.
+    - Note 2: _a0_ should be a numeric value.
+    - Note 3: Both _an_ and _bn_ should be a funtions of _n_ (use the character "n" to add it). The use of a diferent notation will end in an error. 
+
+![main screen](https://cdn.jsdelivr.net/gh/Jkutkut/JS-Fourier-Series-Visualization@master/resources/screenshot.png)
 
 ## Fourier Series examples:
 
