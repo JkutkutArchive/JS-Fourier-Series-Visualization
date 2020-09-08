@@ -2,6 +2,8 @@
 
 This simple visualization enables to see Fourier Series with an easy setup.
 
+### *[Use now!](https://jkutkut.github.io/JS-Fourier-Series-Visualization/)*
+
 ## Tutorial:
 
 ### Values to adjust:
